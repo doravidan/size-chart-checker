@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Size Chart Checker: paste any size chart, find your size (free)</title>
+<meta name="description" content="Paste the size chart from any clothing product page, add your measurements, and see which size fits, measurement by measurement. Free, no sign-up, runs in your browser.">
+<!-- Add <link rel="canonical" href="https://YOUR-FINAL-URL/"> once the URL is final (DEPLOY.md) -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#5b3df5">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Size Chart Checker: which size should I buy?">
+<meta property="og:description" content="Paste any size chart, add your measurements, get your size with a plain-English reason. Free and private.">
+<style>
+:root{--ink:#16141a;--muted:#5d5866;--line:#e4e0ea;--bg:#faf9fc;--card:#fff;--accent:#5b3df5;--accent2:#ece8ff;--ok:#127a43;--okbg:#e5f6ec;--warn:#9a5b00;--warnbg:#fff3dc;--bad:#b3261e;--badbg:#fde8e6;--r:14px}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+header h1{font-size:clamp(26px,5vw,38px);line-height:1.15;margin:8px 0 6px;letter-spacing:-.02em}
+header p{margin:0;color:var(--muted);font-size:17px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--accent2);color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:16px}
+.card h2{font-size:18px;margin:0 0 4px;display:flex;gap:10px;align-items:center}
+.step{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:14px;display:inline-grid;place-items:center;flex:none}
+.hint{color:var(--muted);font-size:14px;margin:2px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;font-size:13px;font-weight:600;color:var(--muted);gap:4px}
+input[type=number],select,textarea{font:inherit;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;width:100%}
+input[type=number]:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+textarea{min-height:150px;font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.radio{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.radio label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.radio small{color:var(--muted);display:block}
+details{margin-top:10px}summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px}
+.preview{overflow:auto;margin-top:10px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;white-space:nowrap}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.msg{font-size:14px;padding:8px 10px;border-radius:10px;margin-top:8px}
+.msg.warn{background:var(--warnbg);color:var(--warn)}.msg.bad{background:var(--badbg);color:var(--bad)}
+.result{border:2px solid var(--accent)}
+.big{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.size{font-size:56px;font-weight:800;line-height:1;letter-spacing:-.03em;min-width:80px}
+.conf{font-weight:700;font-size:13px;padding:4px 10px;border-radius:99px}
+.conf.high{background:var(--okbg);color:var(--ok)}.conf.medium{background:var(--warnbg);color:var(--warn)}.conf.low,.conf.none{background:var(--badbg);color:var(--bad)}
+ul.why{margin:10px 0 0;padding-left:20px}ul.why li{margin:3px 0}
+td.s-fit{background:var(--okbg);color:var(--ok)}td.s-big{background:#eef3ff;color:#2a4fb5}td.s-small{background:var(--badbg);color:var(--bad)}
+tr.rec td{font-weight:700}tr.rec td:first-child::after{content:" ← best";color:var(--accent)}
+.cta{background:linear-gradient(135deg,#1b1530,#3a2a7a);color:#fff;border:0}
+.cta h2{color:#fff}.cta p{color:#ddd6ff;margin:6px 0 12px}.cta .btn.primary{background:#fff;color:#2b1d73;border-color:#fff}
+.cta small{color:#bfb5f0}
+.faq h3{font-size:16px;margin:16px 0 4px}.faq p{margin:0;color:var(--muted)}
+footer{color:var(--muted);font-size:13px;margin-top:30px}
+footer a,.faq a{color:var(--accent)}
+.sr{position:absolute;left:-9999px}
+#debug{font:12px ui-monospace,monospace;white-space:pre-wrap;background:#111;color:#9f9;padding:10px;border-radius:10px;display:none}
+@media (max-width:520px){.size{font-size:46px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="pill">Free · no sign-up · runs in your browser</span>
+  <h1>Which size should I buy? Paste the size chart.</h1>
+  <p>Copy the size chart from any clothing product page, add your measurements, and get a size with the reason, measurement by measurement.</p>
+</header>
+
+<section class="card" aria-labelledby="s1">
+  <h2 id="s1"><span class="step">1</span>Your measurements</h2>
+  <p class="hint">Body measurements, taken over light clothing. Only fill what you know. Bust/chest, waist and hips matter most.</p>
+  <div class="row" style="margin-bottom:10px">
+    <div class="seg" role="group" aria-label="Your units">
+      <button type="button" data-unit="cm" aria-pressed="true">cm</button>
+      <button type="button" data-unit="in" aria-pressed="false">inches</button>
+    </div>
+  </div>
+  <div class="grid" id="meGrid">
+    <label class="f">Bust / chest<input type="number" inputmode="decimal" step="0.5" min="0" id="me_chest"></label>
+    <label class="f">Waist<input type="number" inputmode="decimal" step="0.5" min="0" id="me_waist"></label>
+    <label class="f">Hips<input type="number" inputmode="decimal" step="0.5" min="0" id="me_hips"></label>
+  </div>
+  <details><summary>More measurements (shoulder, thigh, inseam…)</summary>
+    <div class="grid" style="margin-top:10px">
+      <label class="f">Shoulder width<input type="number" inputmode="decimal" step="0.5" min="0" id="me_shoulder"></label>
+      <label class="f">Underbust<input type="number" inputmode="decimal" step="0.5" min="0" id="me_underbust"></label>
+      <label class="f">Thigh<input type="number" inputmode="decimal" step="0.5" min="0" id="me_thigh"></label>
+      <label class="f">Neck<input type="number" inputmode="decimal" step="0.5" min="0" id="me_neck"></label>
+      <label class="f">Sleeve (shoulder to wrist)<input type="number" inputmode="decimal" step="0.5" min="0" id="me_sleeve"></label>
+      <label class="f">Inseam<input type="number" inputmode="decimal" step="0.5" min="0" id="me_inseam"></label>
+    </div>
+  </details>
+  <details><summary>How to measure (1 minute)</summary>
+    <ul class="hint" style="margin-top:8px">
+      <li><b>Bust/chest:</b> around the fullest part, tape level under the arms.</li>
+      <li><b>Waist:</b> around the narrowest part of your torso, usually just above the belly button.</li>
+      <li><b>Hips:</b> around the fullest part of your hips and seat, feet together.</li>
+      <li>Keep the tape snug but not tight, and breathe out normally.</li>
+    </ul>
+  </details>
+  <div class="row" style="margin-top:10px;font-size:14px;color:var(--muted)">
+    <label><input type="checkbox" id="remember" checked> Remember my measurements on this device</label>
+    <button type="button" class="btn" id="forget" style="padding:4px 10px">Forget</button>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="s2">
+  <h2 id="s2"><span class="step">2</span>Paste the product's size chart</h2>
+  <p class="hint">On the product page, select the size table, copy it, and paste it here. Sizes can run down or across. Ranges like 86-90 and inches or cm both work.</p>
+  <label class="sr" for="chart">Size chart</label>
+  <textarea id="chart" spellcheck="false" placeholder="Size	Bust (cm)	Waist (cm)	Hips (cm)
+S	84-88	66-70	90-94
+M	88-92	70-74	94-98
+..."></textarea>
+  <div class="row" style="margin-top:8px">
+    <span class="hint" style="margin:0">Try an example (made-up numbers, not from any brand):</span>
+    <button type="button" class="btn" data-example="body">Dress (body chart)</button>
+    <button type="button" class="btn" data-example="flat">T-shirt (laid flat)</button>
+    <button type="button" class="btn" data-example="across">Jeans (sizes across, inches)</button>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <label class="f" style="flex-direction:row;align-items:center;gap:8px">Chart units
+      <select id="chartUnit" style="width:auto"><option value="auto">Detect</option><option value="cm">cm</option><option value="in">inches</option></select>
+    </label>
+  </div>
+  <div id="parseMsgs"></div>
+  <div class="preview" id="preview"></div>
+</section>
+
+<section class="card" aria-labelledby="s3">
+  <h2 id="s3"><span class="step">3</span>About this item</h2>
+  <div class="opts">
+    <div class="radio" role="radiogroup" aria-label="What the chart measures">
+      <b style="font-size:14px">The chart shows…</b>
+      <label><input type="radio" name="ctype" value="body" checked><span>Body measurements<small>"Fits bust 88-92". Most size charts.</small></span></label>
+      <label><input type="radio" name="ctype" value="garment"><span>Garment measurements<small>The clothing itself, measured all the way round.</small></span></label>
+      <label><input type="radio" name="ctype" value="flat"><span>Garment laid flat<small>Half width, e.g. "pit to pit". We double it.</small></span></label>
+    </div>
+    <div class="radio">
+      <b style="font-size:14px">Item type</b>
+      <select id="category"><option value="auto">Not sure / other</option><option value="top">Top, shirt, jacket</option><option value="bottom">Trousers, jeans, skirt</option><option value="dress">Dress, jumpsuit</option></select>
+      <b style="font-size:14px;margin-top:6px">How you like it to fit</b>
+      <select id="fit"><option value="snug">Snug / fitted</option><option value="regular" selected>Regular</option><option value="relaxed">Relaxed / oversized</option></select>
+      <label style="margin-top:6px"><input type="checkbox" id="stretch"> Stretchy fabric (elastane, jersey, rib knit)</label>
+    </div>
+  </div>
+  <div id="typeHint"></div>
+</section>
+
+<section class="card result" id="result" hidden aria-live="polite"></section>
+
+<section class="card cta" id="cta" hidden>
+  <h2>Size sorted. Now see how it looks on you.</h2>
+  <p>This checker answers "will it fit?". <b>Style My Look</b> answers "will it suit me?": paste the product link or add a photo of the item, add your photo, and get a front, side and back preview on you. It's an AI preview of the look, not a fit guarantee, so use both.</p>
+  <div class="row">
+    <a class="btn primary" id="ctaLink" href="#" target="_blank" rel="noopener">Get Style My Look on the App Store</a>
+    <small id="ctaNote">iPhone app. New accounts get 3 starter credits.</small>
+  </div>
+</section>
+
+<section class="card faq">
+  <h2>Questions</h2>
+  <h3>How accurate is this?</h3>
+  <p>It is exactly as good as the chart you paste and the measurements you enter. It does the comparison carefully and tells you when your measurements disagree, but brands cut differently, so read the fabric and the reviews too.</p>
+  <h3>My measurements point to two sizes. Which one?</h3>
+  <p>The checker leans to the size that isn't tight on the key measurements for that item (bust for tops, waist and hips for bottoms, all three for dresses), because a tailor can take clothes in but can rarely let them out. For stretchy fabric it allows a closer fit.</p>
+  <h3>What's the difference between body and garment charts?</h3>
+  <p>A body chart says who the size is meant for ("bust 88-92 cm"). A garment chart measures the clothes, which are bigger than your body by design. For garment charts the checker adds normal wearing room (rule-of-thumb amounts, adjusted by your fit preference).</p>
+  <h3>Do you store my measurements?</h3>
+  <p>No. The size matching runs entirely in this page, and your measurements and charts are never sent anywhere. If "remember" is ticked, your numbers are kept only in this browser's local storage, and "Forget" deletes them. <span id="privacyLine"></span> <a href="privacy.html">Privacy</a>.</p>
+  <h3>Is this made by a store?</h3>
+  <p>No. It's a free tool from the team behind Style My Look, an iPhone try-on app. It is not affiliated with any brand or retailer.</p>
+</section>
+
+<footer>
+  <p>Size Chart Checker by <a href="https://aitryon.studio" rel="noopener">Style My Look</a>. Results are estimates, not a guarantee of fit. Always check the store's return policy. · <a href="privacy.html">Privacy</a></p>
+  <div id="debug"></div>
+</footer>
+</div>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Size Chart Checker","applicationCategory":"LifestyleApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste a clothing size chart, enter your measurements, and see which size fits, measurement by measurement."}
+</script>
+<script src="fit.js"></script>
+<script>
+(function () {
+  "use strict";
+  // ---- Config: the only block to edit before publishing (see DEPLOY.md) ----
+  var CONFIG = {
+    appStoreUrl: "https://apps.apple.com/app/style-my-look-ai-try-on/id6757364968", // live listing (verified via iTunes lookup 2026-10-09)
+    providerToken: "",            // "pt" from App Store Connect > Analytics > Campaigns link generator. Needed for ct= attribution.
+    campaignPrefix: "sizechk",    // ct = sizechk-<source>, source taken from ?ref= or ?utm_source= (e.g. sizechk-pinterest)
+    analytics: { provider: "none", goatcounterCode: "", plausibleDomain: "" } // "none" | "goatcounter" | "plausible"
+  };
+  var F = window.FitEngine, $ = function (id) { return document.getElementById(id); };
+  var KEYS = ["chest", "waist", "hips", "shoulder", "underbust", "thigh", "neck", "sleeve", "inseam"];
+  var state = { unit: "cm", chart: null, lastResultKey: "" };
+
+  // ---- Analytics: cookieless page/event counts only. Measurements are never sent anywhere. ----
+  var A = CONFIG.analytics || {};
+  (function loadAnalytics() {
+    var sc;
+    if (A.provider === "goatcounter" && A.goatcounterCode) {
+      sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
+      sc.setAttribute("data-goatcounter", "https://" + A.goatcounterCode + ".goatcounter.com/count");
+    } else if (A.provider === "plausible" && A.plausibleDomain) {
+      sc = document.createElement("script"); sc.defer = true; sc.src = "https://plausible.io/js/script.tagged-events.js";
+      sc.setAttribute("data-domain", A.plausibleDomain);
+      window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
+    }
+    if (sc) document.head.appendChild(sc);
+    var pl = $("privacyLine");
+    if (pl) pl.textContent = sc ? "We count anonymous page visits and button clicks (no cookies, no measurements)." : "This page sends nothing anywhere.";
+  })();
+  function track(name, props) {
+    try {
+      var c = JSON.parse(localStorage.getItem("scc_counts") || "{}"); c[name] = (c[name] || 0) + 1;
+      localStorage.setItem("scc_counts", JSON.stringify(c));
+      if (A.provider === "plausible" && window.plausible) window.plausible(name, { props: props || {} });
+      if (A.provider === "goatcounter" && window.goatcounter && window.goatcounter.count && name !== "page_view")
+        window.goatcounter.count({ path: name + "-" + source(), title: name + (props && props.v ? " (" + props.v + ")" : ""), event: true, no_session: name === "cta_click" });
+      if (/debug=1/.test(location.search)) { var d = $("debug"); d.style.display = "block"; d.textContent = "events (this browser): " + JSON.stringify(c, null, 1) + "\nCTA: " + appLink(); }
+    } catch (e) {}
+  }
+  function source() {
+    var q = new URLSearchParams(location.search), s = q.get("ref") || q.get("utm_source") || "direct";
+    return s.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30 - CONFIG.campaignPrefix.length - 1) || "direct";
+  }
+  function appLink() {
+    var q = [];
+    if (CONFIG.providerToken) q.push("pt=" + encodeURIComponent(CONFIG.providerToken));
+    q.push("ct=" + encodeURIComponent(CONFIG.campaignPrefix + "-" + source()));
+    if (CONFIG.providerToken) q.push("mt=8");
+    return CONFIG.appStoreUrl + "?" + q.join("&");
+  }
+  $("ctaLink").href = appLink();
+  var isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  if (!isApple) $("ctaNote").textContent = "iPhone only for now. New accounts get 3 starter credits.";
+  $("ctaLink").addEventListener("click", function () { track("cta_click", { v: isApple ? "apple" : "other", platform: isApple ? "apple" : "other", source: source() }); });
+
+  // ---- Units ----
+  function toCm(v) { return state.unit === "in" ? v * F.CM_PER_IN : v; }
+  function fmt(cm, digits) { var v = state.unit === "in" ? cm / F.CM_PER_IN : cm; var d = digits == null ? (state.unit === "in" ? 1 : 0) : digits; return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)) + (state.unit === "in" ? " in" : " cm"); }
+  function fmtRange(r) { if (Math.abs(r[0] - r[1]) < 0.05) return fmt(r[0]); return fmt(r[0]).replace(/ (cm|in)$/, "") + "–" + fmt(r[1]); }
+  document.querySelectorAll("[data-unit]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var nu = b.getAttribute("data-unit"); if (nu === state.unit) return;
+      KEYS.forEach(function (k) { var el = $("me_" + k); if (el.value) { var v = parseFloat(el.value); el.value = Math.round((nu === "in" ? v / F.CM_PER_IN : v * F.CM_PER_IN) * 10) / 10; } });
+      state.unit = nu;
+      document.querySelectorAll("[data-unit]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      save(); run();
+    });
+  });
+
+  // ---- Persistence (local only) ----
+  function save() {
+    if (!$("remember").checked) return;
+    var o = { unit: state.unit }; KEYS.forEach(function (k) { o[k] = $("me_" + k).value; });
+    try { localStorage.setItem("scc_me", JSON.stringify(o)); } catch (e) {}
+  }
+  function load() {
+    try {
+      var o = JSON.parse(localStorage.getItem("scc_me") || "null"); if (!o) return;
+      state.unit = o.unit || "cm";
+      document.querySelectorAll("[data-unit]").forEach(function (x) { x.setAttribute("aria-pressed", String(x.getAttribute("data-unit") === state.unit)); });
+      KEYS.forEach(function (k) { if (o[k]) $("me_" + k).value = o[k]; });
+    } catch (e) {}
+  }
+  $("forget").addEventListener("click", function () { localStorage.removeItem("scc_me"); KEYS.forEach(function (k) { $("me_" + k).value = ""; }); run(); });
+  $("remember").addEventListener("change", function () { if (!this.checked) localStorage.removeItem("scc_me"); else save(); });
+
+  // ---- Examples (made-up demo numbers) ----
+  var EX = {
+    body: { chart: "Size\tUS\tBust (cm)\tWaist (cm)\tHips (cm)\nXS\t0-2\t80-84\t62-66\t86-90\nS\t4-6\t84-88\t66-70\t90-94\nM\t8-10\t88-92\t70-74\t94-98\nL\t12-14\t92-97\t74-79\t98-103\nXL\t16-18\t97-102\t79-84\t103-108", type: "body", cat: "dress" },
+    flat: { chart: "Size\tPit to pit (cm)\tLength (cm)\nS\t49\t69\nM\t52\t71\nL\t55\t73\nXL\t58\t75\nXXL\t61\t77", type: "flat", cat: "top" },
+    across: { chart: "Size\t26\t28\t30\t32\t34\nWaist (in)\t27\t29\t31\t33\t35\nHip (in)\t36\t38\t40\t42\t44\nInseam (in)\t30\t30\t31\t31\t32", type: "garment", cat: "bottom" }
+  };
+  document.querySelectorAll("[data-example]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var e = EX[b.getAttribute("data-example")];
+      $("chart").value = e.chart; $("category").value = e.cat;
+      document.querySelector('input[name=ctype][value="' + e.type + '"]').checked = true;
+      track("example_used", { example: b.getAttribute("data-example") });
+      run();
+    });
+  });
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // ---- Main ----
+  function readMe() { var me = {}; KEYS.forEach(function (k) { var v = parseFloat($("me_" + k).value); if (v > 0) me[k] = toCm(v); }); return me; }
+  function opts() { return { chartType: document.querySelector("input[name=ctype]:checked").value, fit: $("fit").value, stretch: $("stretch").checked, category: $("category").value }; }
+
+  function renderPreview(chart) {
+    if (!$("chart").value.trim()) { $("parseMsgs").innerHTML = ""; $("preview").innerHTML = ""; $("typeHint").innerHTML = ""; return; }
+    var msgs = chart.warnings.map(function (w) { return '<div class="msg warn">' + esc(w) + "</div>"; }).join("");
+    if (!chart.sizes.length && $("chart").value.trim()) msgs += '<div class="msg bad">Couldn\'t read sizes from that text. Make sure the first row has headers like <b>Size, Bust, Waist, Hips</b> and each row starts with the size.</div>';
+    $("parseMsgs").innerHTML = msgs;
+    if (!chart.sizes.length) { $("preview").innerHTML = ""; return; }
+    var cols = chart.columns;
+    var h = '<p class="hint" style="margin:8px 0 4px">Here is what we read (shown in your units). Check it matches the store\'s chart:</p><table><thead><tr><th>Size</th>' +
+      cols.map(function (c) { return "<th>" + esc(F.labelOf(c.key)) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    chart.sizes.forEach(function (s) {
+      var alt = Object.keys(s.alt).map(function (k) { return k + " " + s.alt[k]; }).join(", ");
+      h += "<tr><td>" + esc(s.label) + (alt ? ' <span style="color:var(--muted);font-size:12px">(' + esc(alt) + ")</span>" : "") + "</td>" +
+        cols.map(function (c) { return "<td>" + (s.m[c.key] ? fmtRange(s.m[c.key]) : "—") + "</td>"; }).join("") + "</tr>";
+    });
+    $("preview").innerHTML = h + "</tbody></table>";
+    var t = opts().chartType;
+    $("typeHint").innerHTML = chart.flatDetected && t !== "flat" ? '<div class="msg warn">This chart looks like it is measured laid flat (e.g. "pit to pit"). Pick <b>Garment laid flat</b> above if so.</div>' : "";
+  }
+
+  function cellText(c) {
+    if (c.status === "fit") return "fits";
+    if (c.by < 0.5) return "fits (just)";
+    if (c.mode === "ease") return c.status === "big" ? "+" + fmt(c.by) + " roomy" : fmt(c.by) + " tight";
+    if (c.mode === "length") return c.status === "big" ? fmt(c.by) + " longer" : fmt(c.by) + " shorter";
+    return c.status === "big" ? fmt(c.by) + " big" : fmt(c.by) + " small";
+  }
+
+  function lineFor(k, rec, res) {
+    var c = rec.cells[k], pm = res.perMeasure[k], name = F.labelOf(k);
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    var s = "<b>" + esc(name) + ":</b> ";
+    if (c.mode === "ease") s += "garment " + fmt(c.chart[0]) + " vs your " + fmt(c.chart[0] - c.ease) + " = " + fmt(c.ease) + " of room (" + ($("fit").value) + " fit wants about " + fmtRange(c.window) + "). ";
+    else s += "this size is listed as " + fmtRange(c.chart) + ". ";
+    s += (c.status === "fit" || c.by < 0.5) ? "Good." : (c.status === "small" ? "About " + fmt(c.by) + " too tight." : "About " + fmt(c.by) + " extra.");
+    if (pm && pm.label !== rec.label) s += " On its own this measurement points to <b>" + esc(pm.label) + "</b>.";
+    return "<li>" + s + "</li>";
+  }
+
+  function run() {
+    save();
+    var text = $("chart").value;
+    var chart = F.parseChart(text, { unit: $("chartUnit").value });
+    state.chart = chart; renderPreview(chart);
+    var box = $("result"), cta = $("cta");
+    if (!chart.sizes.length) {
+      box.hidden = true; cta.hidden = true;
+      if (text.trim().length > 20 && state.lastFail !== text.length) { state.lastFail = text.length; clearTimeout(state.failT); state.failT = setTimeout(function () { if (!state.chart.sizes.length) track("parse_fail"); }, 3000); }
+      return;
+    }
+    var me = readMe(), o = opts(), res = F.evaluate(chart, me, o);
+    if (res.confidence === "none" || !res.recommended) {
+      box.hidden = false; cta.hidden = true;
+      box.innerHTML = '<h2>Almost there</h2><p class="hint">Enter at least one of your measurements that this chart lists: ' + chart.columns.map(function (c) { return F.labelOf(c.key); }).join(", ") + ".</p>";
+      return;
+    }
+    var rec = res.recommended, confTxt = { high: "Confident", medium: "Fairly confident", low: "Uncertain" }[res.confidence];
+    var keys = chart.columns.map(function (c) { return c.key; }).filter(function (k) { return rec.cells[k]; });
+    var h = '<div class="big"><div><div class="hint" style="margin:0">Your size for this item</div><div class="size">' + esc(rec.label) + "</div>" +
+      (Object.keys(rec.alt).length ? '<div class="hint" style="margin:0">' + esc(Object.keys(rec.alt).map(function (k) { return k + " " + rec.alt[k]; }).join(" · ")) + "</div>" : "") +
+      '</div><div><span class="conf ' + res.confidence + '">' + confTxt + "</span>" +
+      (res.runnerUp ? '<p style="margin:8px 0 0">Close call with <b>' + esc(res.runnerUp.label) + "</b>. " + (res.runnerUp.index > rec.index ? "Size up if you're between sizes in a stiff fabric or want more room." : "Size down only if the fabric is stretchy or you like a closer fit.") + "</p>" : "") +
+      "</div></div>";
+    h += '<ul class="why">' + keys.map(function (k) { return lineFor(k, rec, res); }).join("") + res.reasons.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>";
+    h += '<details open><summary>Every size compared</summary><div class="preview"><table><thead><tr><th>Size</th>' + keys.map(function (k) { return "<th>" + esc(F.labelOf(k)) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    res.rows.forEach(function (r) {
+      h += '<tr class="' + (r === rec ? "rec" : "") + '"><td>' + esc(r.label) + "</td>" + keys.map(function (k) { var c = r.cells[k]; return c ? '<td class="s-' + (c.by < 0.5 ? "fit" : c.status) + '">' + cellText(c) + "</td>" : "<td>—</td>"; }).join("") + "</tr>";
+    });
+    h += '</tbody></table></div></details><div class="row" style="margin-top:12px"><button class="btn" id="copyBtn" type="button">Copy result</button><button class="btn" id="againBtn" type="button">Check another item</button><button class="btn" id="shareBtn" type="button">Share this tool</button></div>';
+    box.innerHTML = h; box.hidden = false; cta.hidden = false;
+    $("copyBtn").onclick = function () {
+      var txt = "Size Chart Checker: " + rec.label + " (" + confTxt.toLowerCase() + ")\n" + keys.map(function (k) { return "- " + F.labelOf(k) + ": " + cellText(rec.cells[k]); }).join("\n") + (res.reasons.length ? "\n" + res.reasons.join(" ") : "");
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { $("copyBtn").textContent = "Copied"; }, function () { prompt("Copy this:", txt); });
+      track("copy_result");
+    };
+    $("shareBtn").onclick = function () {
+      var url = location.origin + location.pathname, data = { title: "Size Chart Checker", text: "Paste any size chart and see which size fits you. Free, no sign-up.", url: url };
+      if (navigator.share) navigator.share(data).catch(function () {}); else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { $("shareBtn").textContent = "Link copied"; });
+      track("share_click");
+    };
+    $("againBtn").onclick = function () { $("chart").value = ""; run(); $("chart").focus(); };
+    var key = rec.label + "|" + text.length + "|" + JSON.stringify(o);
+    if (key !== state.lastResultKey) { state.lastResultKey = key; track("result_shown", { v: res.confidence, confidence: res.confidence, category: o.category, chartType: o.chartType }); }
+  }
+
+  var timer; function debounced() { clearTimeout(timer); timer = setTimeout(run, 250); }
+  ["chart"].concat(KEYS.map(function (k) { return "me_" + k; })).forEach(function (id) { $(id).addEventListener("input", debounced); });
+  ["chartUnit", "category", "fit", "stretch"].forEach(function (id) { $(id).addEventListener("change", run); });
+  document.querySelectorAll("input[name=ctype]").forEach(function (r) { r.addEventListener("change", run); });
+  load(); run(); track("page_view");
+})();
+</script>
+</body>
+</html>
