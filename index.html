@@ -199,7 +199,7 @@ M	88-92	70-74	94-98
     appStoreUrl: "https://apps.apple.com/app/style-my-look-ai-try-on/id6757364968", // live listing (verified via iTunes lookup 2026-10-09)
     providerToken: "256921",            // "pt" from App Store Connect > Analytics > Campaigns link generator. Needed for ct= attribution.
     campaignPrefix: "sizechk",    // ct = sizechk-<source>, source taken from ?ref= or ?utm_source= (e.g. sizechk-pinterest)
-    analytics: { provider: "none", goatcounterCode: "", plausibleDomain: "" } // "none" | "goatcounter" | "plausible"
+    analytics: { provider: "goatcounter", goatcounterCode: "doravidan", plausibleDomain: "" } // "none" | "goatcounter" | "plausible"
   };
   var F = window.FitEngine, $ = function (id) { return document.getElementById(id); };
   var KEYS = ["chest", "waist", "hips", "shoulder", "underbust", "thigh", "neck", "sleeve", "inseam"];
@@ -208,18 +208,17 @@ M	88-92	70-74	94-98
   // ---- Analytics: cookieless page/event counts only. Measurements are never sent anywhere. ----
   var A = CONFIG.analytics || {};
   (function loadAnalytics() {
-    var sc;
+    var sc, on = false;
     if (A.provider === "goatcounter" && A.goatcounterCode) {
-      sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
-      sc.setAttribute("data-goatcounter", "https://" + A.goatcounterCode + ".goatcounter.com/count");
+      on = true; // count.js is loaded by the static <script data-goatcounter> tag before </body>
     } else if (A.provider === "plausible" && A.plausibleDomain) {
       sc = document.createElement("script"); sc.defer = true; sc.src = "https://plausible.io/js/script.tagged-events.js";
       sc.setAttribute("data-domain", A.plausibleDomain);
       window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
     }
-    if (sc) document.head.appendChild(sc);
+    if (sc) { document.head.appendChild(sc); on = true; }
     var pl = $("privacyLine");
-    if (pl) pl.textContent = sc ? "We count anonymous page visits and button clicks (no cookies, no measurements)." : "This page sends nothing anywhere.";
+    if (pl) pl.textContent = on ? "We count anonymous page visits and button clicks (no cookies, no measurements)." : "This page sends nothing anywhere.";
   })();
   function track(name, props) {
     try {
@@ -245,6 +244,8 @@ M	88-92	70-74	94-98
   $("ctaLink").href = appLink();
   var isApple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
   if (!isApple) $("ctaNote").textContent = "iPhone only for now. New accounts get 3 starter credits.";
+  function gcEvent(path, title) { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: path, title: title, event: true }); }
+  $("ctaLink").addEventListener("click", function () { gcEvent("sc-appstore-cta", "Size Chart: App Store CTA"); });
   $("ctaLink").addEventListener("click", function () { track("cta_click", { v: isApple ? "apple" : "other", platform: isApple ? "apple" : "other", source: source() }); });
 
   // ---- Units ----
@@ -381,6 +382,7 @@ M	88-92	70-74	94-98
     };
     $("againBtn").onclick = function () { $("chart").value = ""; run(); $("chart").focus(); };
     var key = rec.label + "|" + text.length + "|" + JSON.stringify(o);
+    if (!state.gcChecked) { state.gcChecked = true; gcEvent("sc-check", "Size Chart: size checked"); }
     if (key !== state.lastResultKey) { state.lastResultKey = key; track("result_shown", { v: res.confidence, confidence: res.confidence, category: o.category, chartType: o.chartType }); }
   }
 
@@ -391,5 +393,6 @@ M	88-92	70-74	94-98
   load(); run(); track("page_view");
 })();
 </script>
+<script data-goatcounter="https://doravidan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
