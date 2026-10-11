@@ -5,12 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Size Chart Checker: paste any size chart, find your size (free)</title>
 <meta name="description" content="Paste the size chart from any clothing product page, add your measurements, and see which size fits, measurement by measurement. Free, no sign-up, runs in your browser.">
-<!-- Add <link rel="canonical" href="https://YOUR-FINAL-URL/"> once the URL is final (DEPLOY.md) -->
+<link rel="canonical" href="https://doravidan.github.io/size-chart-checker/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#5b3df5">
 <meta property="og:type" content="website">
-<meta property="og:image" content="og-image.png">
+<meta property="og:site_name" content="Size Chart Checker">
+<meta property="og:url" content="https://doravidan.github.io/size-chart-checker/">
+<meta property="og:image" content="https://doravidan.github.io/size-chart-checker/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Size Chart Checker: paste any size chart, find your size">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Size Chart Checker: which size should I buy?">
+<meta name="twitter:description" content="Paste any size chart, add your measurements, get your size with a plain-English reason. Free and private.">
+<meta name="twitter:image" content="https://doravidan.github.io/size-chart-checker/og-image.jpg">
 <meta property="og:title" content="Size Chart Checker: which size should I buy?">
 <meta property="og:description" content="Paste any size chart, add your measurements, get your size with a plain-English reason. Free and private.">
 <style>
@@ -63,6 +71,7 @@ tr.rec td{font-weight:700}tr.rec td:first-child::after{content:" ← best";color
 footer{color:var(--muted);font-size:13px;margin-top:30px}
 footer a,.faq a{color:var(--accent)}
 .sr{position:absolute;left:-9999px}
+.signup input[type=email]{font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px;flex:1 1 200px;min-width:0}.signup .btn{min-height:44px}
 #debug{font:12px ui-monospace,monospace;white-space:pre-wrap;background:#111;color:#9f9;padding:10px;border-radius:10px;display:none}
 @media (max-width:520px){.size{font-size:46px}.card{padding:14px}}
 </style>
@@ -167,6 +176,18 @@ M	88-92	70-74	94-98
   </div>
 </section>
 
+<section class="card signup" aria-labelledby="su-h">
+  <h2 id="su-h" style="font-size:16px">Get new free shopping tools by email</h2>
+  <form id="signupForm" action="https://formsubmit.co/doravidan@mail.grokbot.com" method="POST">
+    <label class="sr" for="su-email">Email</label>
+    <div class="row"><input id="su-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com"><button class="btn primary" type="submit">Sign up</button></div>
+    <input type="hidden" name="_subject" value="New signup: Size Chart Checker"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="https://doravidan.github.io/size-chart-checker/?signup=ok">
+    <input type="text" name="_honey" class="sr" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="hint" id="signupMsg" role="status" style="margin:6px 0 0">At most once a month. Only your email is sent, never your measurements. <a href="privacy.html">Privacy</a>.</p>
+  </form>
+</section>
+
 <section class="card faq">
   <h2>Questions</h2>
   <h3>How accurate is this?</h3>
@@ -187,9 +208,8 @@ M	88-92	70-74	94-98
 </footer>
 </div>
 
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Size Chart Checker","applicationCategory":"LifestyleApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste a clothing size chart, enter your measurements, and see which size fits, measurement by measurement."}
-</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Size Chart Checker", "url": "https://doravidan.github.io/size-chart-checker/", "image": "https://doravidan.github.io/size-chart-checker/og-image.jpg", "applicationCategory": "LifestyleApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Paste a clothing size chart, enter your measurements, and see which size fits, measurement by measurement.", "publisher": {"@type": "Organization", "name": "Style My Look", "url": "https://aitryon.studio"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How accurate is this?", "acceptedAnswer": {"@type": "Answer", "text": "It is exactly as good as the chart you paste and the measurements you enter. It does the comparison carefully and tells you when your measurements disagree, but brands cut differently, so read the fabric and the reviews too."}}, {"@type": "Question", "name": "My measurements point to two sizes. Which one?", "acceptedAnswer": {"@type": "Answer", "text": "The checker leans to the size that isn't tight on the key measurements for that item (bust for tops, waist and hips for bottoms, all three for dresses), because a tailor can take clothes in but can rarely let them out. For stretchy fabric it allows a closer fit."}}, {"@type": "Question", "name": "What's the difference between body and garment charts?", "acceptedAnswer": {"@type": "Answer", "text": "A body chart says who the size is meant for (\"bust 88-92 cm\"). A garment chart measures the clothes, which are bigger than your body by design. For garment charts the checker adds normal wearing room (rule-of-thumb amounts, adjusted by your fit preference)."}}, {"@type": "Question", "name": "Do you store my measurements?", "acceptedAnswer": {"@type": "Answer", "text": "No. The size matching runs entirely in this page, and your measurements and charts are never sent anywhere. If \"remember\" is ticked, your numbers are kept only in this browser's local storage, and \"Forget\" deletes them. Privacy."}}, {"@type": "Question", "name": "Is this made by a store?", "acceptedAnswer": {"@type": "Answer", "text": "No. It's a free tool from the team behind Style My Look, an iPhone try-on app. It is not affiliated with any brand or retailer."}}]}</script>
 <script src="fit.js"></script>
 <script>
 (function () {
@@ -246,6 +266,22 @@ M	88-92	70-74	94-98
   if (!isApple) $("ctaNote").textContent = "iPhone only for now. New accounts get 3 starter credits.";
   function gcEvent(path, title) { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: path, title: title, event: true }); }
   $("ctaLink").addEventListener("click", function () { gcEvent("sc-appstore-cta", "Size Chart: App Store CTA"); });
+  // ---- Email signup (FormSubmit, no account; delivers to doravidan@mail.grokbot.com). Only the email is sent. ----
+  (function () {
+    var sf = $("signupForm"), sm = $("signupMsg"), TO = "doravidan@mail.grokbot.com";
+    if (/[?&]signup=ok/.test(location.search)) sm.textContent = "Thanks, you're signed up.";
+    sf.addEventListener("submit", function (ev) {
+      ev.preventDefault(); if (sf._honey.value) return;
+      var d = new FormData(sf), btn = sf.querySelector("button");
+      d.append("site", "Size Chart Checker"); d.append("source", source());
+      gcEvent("sc-signup-submit", "Size Chart: email signup submit"); btn.disabled = true;
+      function fail() { btn.disabled = false; sm.textContent = "Signup didn't go through. You can email "; var a = document.createElement("a"); a.href = "mailto:" + TO + "?subject=" + encodeURIComponent("Size Chart Checker signup") + "&body=" + encodeURIComponent("Please add me: " + sf.email.value); a.textContent = TO; sm.appendChild(a); }
+      fetch("https://formsubmit.co/ajax/" + TO, { method: "POST", body: d, headers: { Accept: "application/json" } }).then(function (r) { return r.json(); }).then(function (j) {
+        if (String(j.success) === "true") { sm.textContent = "Thanks, you're signed up."; sf.reset(); btn.disabled = false; gcEvent("sc-signup-ok", "Size Chart: email signup confirmed"); } else fail();
+      }).catch(fail);
+    });
+  })();
+  document.querySelectorAll('a[href="https://aitryon.studio"]').forEach(function (a) { a.addEventListener("click", function () { gcEvent("sc-sml-site", "Size Chart: Style My Look site link"); }); });
   $("ctaLink").addEventListener("click", function () { track("cta_click", { v: isApple ? "apple" : "other", platform: isApple ? "apple" : "other", source: source() }); });
 
   // ---- Units ----

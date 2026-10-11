@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://doravidan.github.io/size-chart-checker/sitemap.xml
