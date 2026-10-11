@@ -178,7 +178,7 @@ M	88-92	70-74	94-98
 
 <section class="card signup" aria-labelledby="su-h">
   <h2 id="su-h" style="font-size:16px">Get new free shopping tools by email</h2>
-  <form id="signupForm" action="https://formsubmit.co/doravidan@mail.grokbot.com" method="POST">
+  <form id="signupForm" action="https://formsubmit.co/164487d071c2e91e2633ec878e59bce4" method="POST">
     <label class="sr" for="su-email">Email</label>
     <div class="row"><input id="su-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com"><button class="btn primary" type="submit">Sign up</button></div>
     <input type="hidden" name="_subject" value="New signup: Size Chart Checker"><input type="hidden" name="_template" value="table"><input type="hidden" name="_captcha" value="false">
@@ -276,7 +276,7 @@ M	88-92	70-74	94-98
       d.append("site", "Size Chart Checker"); d.append("source", source());
       gcEvent("sc-signup-submit", "Size Chart: email signup submit"); btn.disabled = true;
       function fail() { btn.disabled = false; sm.textContent = "Signup didn't go through. You can email "; var a = document.createElement("a"); a.href = "mailto:" + TO + "?subject=" + encodeURIComponent("Size Chart Checker signup") + "&body=" + encodeURIComponent("Please add me: " + sf.email.value); a.textContent = TO; sm.appendChild(a); }
-      fetch("https://formsubmit.co/ajax/" + TO, { method: "POST", body: d, headers: { Accept: "application/json" } }).then(function (r) { return r.json(); }).then(function (j) {
+      fetch("https://formsubmit.co/ajax/164487d071c2e91e2633ec878e59bce4", { method: "POST", body: d, headers: { Accept: "application/json" } }).then(function (r) { return r.json(); }).then(function (j) {
         if (String(j.success) === "true") { sm.textContent = "Thanks, you're signed up."; sf.reset(); btn.disabled = false; gcEvent("sc-signup-ok", "Size Chart: email signup confirmed"); } else fail();
       }).catch(fail);
     });
